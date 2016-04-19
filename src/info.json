@@ -1,0 +1,9 @@
+{
+  "name":"bad-chest",
+  "author":"Doc",
+  "version":"0.0.1",
+  "title":"BAD Chest",
+  "homepage":"",
+  "description":"Blueprint Automatic Deployment Chest",
+  "dependencies": ["base"]
+}
