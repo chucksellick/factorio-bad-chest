@@ -4,8 +4,7 @@ var path = require("path");
 
 var gulp = require('gulp');
 
-
-var srcPaths = ["src/**/*.lua", "src/**/*.png", "src/**/*.json", "src/**/*.png"];
+var srcPaths = ["src/**/*.lua", "src/**/*.png", "src/**/*.json", "src/**/*.cfg"];
 
 gulp.task('devBuild', function() {
 

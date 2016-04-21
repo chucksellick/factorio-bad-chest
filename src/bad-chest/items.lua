@@ -13,7 +13,7 @@ data:extend(
   {
     type = "item",
     name = "bad-anchor",
-    icon = "__bad-chest__/bad-chest/graphics/bad-chest-icon.png",
+    icon = "__bad-chest__/bad-chest/graphics/bad-anchor-icon.png",
     flags = {"goes-to-quickbar"},
     subgroup = "logistic-network",
     order = "b[storage]-c[bad-anchor]",

@@ -1,7 +1,7 @@
 require "defines"
 
 badChest = {}
-badChest.openChests = {}
+--badChest.openChests = {}
 
 function implode(delimiter, list)
   local len = #list
@@ -16,6 +16,9 @@ function implode(delimiter, list)
 end
 
 function badChest.chestDataFor(self, entity)
+  if not entity or entity.name ~= "bad-chest" then
+    game.players[1].print("Chest error, entity " + entity.name)
+  end
   global.badChestData = global.badChestData or {}
   for _,data in pairs(global.badChestData) do
     if entity == data.entity then
@@ -23,11 +26,28 @@ function badChest.chestDataFor(self, entity)
     end
   end
   -- Create new data since it didn't exist already
-  local data = {entity=entity, x=0, y=0, rotate=0}
+  local data = {entity=entity, deployed=false} -- x=0, y=0, rotate=0}
   table.insert(global.badChestData, data)
   return data
 end
 
+function badChest.removeDataFor(self, entity)
+  for _,data in pairs(global.badChestData) do
+    if data.entity == entity then
+      table.remove(global.badChestData, _)
+    end
+  end
+end
+
+function badChest.removeDeletedChests(self)
+  for _,data in pairs(global.badChestData) do
+    if not data.entity or data.entity.valid then
+      table.remove(global.badChestData, _)
+    end
+  end
+end
+
+--[[
 function badChest.openGuiFor(self, player_index, chest)
   if self.openChests[player_index] == chest then
     return
@@ -86,10 +106,20 @@ function badChest.closeGui(self, player_index)
   guiRoot.destroy()
   self.openChests[player_index] = nil
 end
+--]]
 
-function badChest.renderPreview(self, player_index)
-  local chest = self.openChests[player_index]
-  if not chest then return end
+function badChest.checkAllChests(self)
+  global.badChestData = global.badChestData or {}
+  for _,data in pairs(global.badChestData) do
+    if not data.deployed then
+      self:checkForBuild(data)
+    end
+  end
+end
+
+function badChest.checkForBuild(self, data)
+  if not data.entity then return end
+  local chest = data.entity
 
   -- Check inventory of chest for blueprint
   local chestInventory = chest.get_inventory(defines.inventory.chest)
@@ -97,7 +127,7 @@ function badChest.renderPreview(self, player_index)
 
   if not chestItemStack.valid_for_read then return end
 
-  local player = game.players[player_index]
+  local player = game.players[1]
 
   if chestItemStack.name ~= "blueprint" then
     player.print("BAD chest must contain blueprint")  
@@ -124,18 +154,21 @@ function badChest.renderPreview(self, player_index)
   for _,bpEntity in pairs(bpEntities) do
     -- Anchor is never placed as it would conflict with the chest
     if (bpEntity.name ~= "bad-anchor") then
-      bpEntity.inner_name = bpEntity.name
-      bpEntity.name = "entity-ghost"
       bpEntity.position = {x= bpEntity.position.x - anchorEntity.position.x + chest.position.x, y= bpEntity.position.y - anchorEntity.position.y + chest.position.y}
       bpEntity.force = chest.force
-      surface.create_entity(bpEntity)
+      if surface.can_place_entity(bpEntity) then
+        bpEntity.inner_name = bpEntity.name
+        bpEntity.name = "entity-ghost"
+        surface.create_entity(bpEntity)
+      end
     end
   end
-  player.print("Blueprint deployed")
+  data.deployed = true
 end
 
 script.on_event(defines.events.on_tick, function(event)
   if event.tick % 20 ~= 0 then return end
+  --[[
   for i,player in pairs(game.players) do
     if player.character then
       if player.opened and player.opened.name == 'bad-chest' then
@@ -146,8 +179,32 @@ script.on_event(defines.events.on_tick, function(event)
       end
     end
   end
+  ]]--
+  badChest:checkAllChests()
 end)
 
-script.on_event(defines.events.on_gui_click, function(event)
+function registerChest(event)
+  if event.created_entity.name == "bad-chest" then
+    badChest:chestDataFor(event.created_entity)
+  end
+end
+function checkRemovedChests(event)
+  if event.item_stack.name == "bad-chest" then
+    badChest:removeDeletedChests()
+  end
+end
+function unregisterChest(event)
+  if event.entity.name == "bad-chest" then
+    badChest:removeDataFor(event.entity)
+  end
+end
+
+script.on_event(defines.events.on_built_entity, registerChest)
+script.on_event(defines.events.on_robot_built_entity, registerChest)
+script.on_event(defines.events.on_player_mined_item, checkRemovedChests)
+script.on_event(defines.events.on_robot_mined, checkRemovedChests)
+script.on_event(defines.events.on_entity_died, unregisterChest)
+
+--[[script.on_event(defines.events.on_gui_click, function(event)
   badChest:guiClicked(event.player_index, event.element.name)
-end)
+end)]]--
