@@ -1,12 +1,32 @@
+var process = require("process");
 var fs = require("fs");
 var path = require("path");
 
 var gulp = require('gulp');
 
-var srcPath = "src/**/*";
-var modPath = "/users/downplay/Library/Application Support/factorio/mods"
-var buildPath = path.join(modPath, "bad-chest_0.0.1");
-gulp.task('default', function() {
-	return gulp.src(srcPath)
-		.pipe(gulp.dest(buildPath));
+var infoJson = require("./src/info.json");
+
+var srcPaths = ["src/**/*.lua", "src/**/*.png", "src/**/*.json", "src/**/*.png"];
+
+var homePath = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+var appPath = (process.platform === 'win32') ? "AppData\\Roaming\\Factorio" : "Library/Application Support/factorio";
+
+var factorioPath = path.join(homePath, appPath);
+
+if (!fs.existsSync(factorioPath)) {
+  throw new Error("Factorio not found at: " + factorioPath + "\nPlease configure correct Factorio base path in config.js");
+}
+
+var modPath = path.join(factorioPath, "mods");
+var buildPath = path.join(modPath, infoJson.name + "_" + infoJson.version);
+
+gulp.task('devBuild', function() {
+  return gulp.src(srcPaths)
+    .pipe(gulp.dest(buildPath));
 });
+
+gulp.task("devWatch", function() {
+  gulp.watch(srcPaths, ["devBuild"]);
+})
+
+gulp.task('default', ["devBuild", "devWatch"]);
