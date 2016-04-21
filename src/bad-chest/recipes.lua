@@ -6,7 +6,7 @@ data:extend(
     enabled = false,
     ingredients =
     {
-      {"steel-chest", 1},
+      {"smart-chest", 1},
       {"bad-anchor", 1}
     },
     result = "bad-chest"
