@@ -95,17 +95,43 @@ function badChest.renderPreview(self, player_index)
   local chestInventory = chest.get_inventory(defines.inventory.chest)
   local chestItemStack = chestInventory[1]
 
-  if not chestItemStack.valid or not chestItemStack.valid_for_read then return end
+  if not chestItemStack.valid_for_read then return end
+
+  local player = game.players[player_index]
 
   if chestItemStack.name ~= "blueprint" then
-    game.players[player_index].print("BAD chest must contain blueprint")  
+    player.print("BAD chest must contain blueprint")  
     return
   end
 
-  local tiles = chestItemStack.get_blueprint_tiles()
-  
-  --local chestData = self:chestDataFor(chest)
-
+  local bpEntities = chestItemStack.get_blueprint_entities()
+  local anchorEntity = nil
+  for _,bpEntity in pairs(bpEntities) do
+    if (bpEntity.name == "bad-anchor") then
+      if anchorEntity then
+        player.print("Multiple BAD Anchors in blueprint, only one is permitted")
+        return
+      end
+      anchorEntity = bpEntity
+    end
+  end
+  if not anchorEntity then
+    player.print("Cannot deploy blueprint, does not contain a BAD Anchor")
+    return
+  end
+  -- Now the offset position is known, place the blueprint
+  local surface = chest.surface
+  for _,bpEntity in pairs(bpEntities) do
+    -- Anchor is never placed as it would conflict with the chest
+    if (bpEntity.name ~= "bad-anchor") then
+      bpEntity.inner_name = bpEntity.name
+      bpEntity.name = "entity-ghost"
+      bpEntity.position = {x= bpEntity.position.x - anchorEntity.position.x + chest.position.x, y= bpEntity.position.y - anchorEntity.position.y + chest.position.y}
+      bpEntity.force = chest.force
+      surface.create_entity(bpEntity)
+    end
+  end
+  player.print("Blueprint deployed")
 end
 
 script.on_event(defines.events.on_tick, function(event)

@@ -12,6 +12,13 @@ data:extend(
         recipe = "bad-chest"
       }
     },
+    effects =
+    {
+      {
+        type = "unlock-recipe",
+        recipe = "bad-anchor"
+      }
+    },
     prerequisites = {"logistic-system"},
     unit = {
       count = 20,

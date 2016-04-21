@@ -1,6 +1,6 @@
 {
   "name": "factorio-bad-chest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "gulp": "^3.9.1"
   }
