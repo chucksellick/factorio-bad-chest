@@ -10,10 +10,7 @@ data:extend(
       {
         type = "unlock-recipe",
         recipe = "bad-chest"
-      }
-    },
-    effects =
-    {
+      },
       {
         type = "unlock-recipe",
         recipe = "bad-anchor"
