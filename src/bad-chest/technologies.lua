@@ -21,13 +21,13 @@ data:extend(
     },
     prerequisites = {"logistic-system"},
     unit = {
-      count = 20,
+      count = 200,
       ingredients = {
         {"science-pack-1", 1},
         {"science-pack-2", 1},
         {"science-pack-3", 1}
       },
-      time = 10
+      time = 30
     },
     order = "c-k-d",
   },

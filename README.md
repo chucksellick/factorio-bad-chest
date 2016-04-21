@@ -6,11 +6,11 @@
 [*] Description: 
 [*] License: MIT
 [*] Release: 2016-04-21
-[*] Download-Url: [url=http://Direct-download-Url]Download[/url] (even when you uploaded it into this forum)
-[*] Website: [url]http://some%20project%20page[/url] (even when there is only this article in forum, submit this article, then edit and add the url of this article)
+[*] Download-Url:
+[*] Website: 
 [*] Dependencies: base
 [*] Category:  Item
-[*] Tags: 
+[*] Tags: blueprint, automation
 [/list]
 
 Do you ever get bored of having to place blueprints by hand? Don't you wish you could automate that?
