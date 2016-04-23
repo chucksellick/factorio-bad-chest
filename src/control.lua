@@ -1,4 +1,5 @@
 require "defines"
+require "lib.TickBalancer"
 
 badChest = {}
 --badChest.openChests = {}
@@ -15,110 +16,17 @@ function implode(delimiter, list)
   return string
 end
 
-function badChest.chestDataFor(self, entity)
-  if not entity or entity.name ~= "bad-chest" then
-    game.players[1].print("Chest error, entity " + entity.name)
-  end
-  global.badChestData = global.badChestData or {}
-  for _,data in pairs(global.badChestData) do
-    if entity == data.entity then
-      return data
-    end
-  end
-  -- Create new data since it didn't exist already
-  local data = {entity=entity, deployed=false} -- x=0, y=0, rotate=0}
-  table.insert(global.badChestData, data)
-  return data
+function badChest:init()
+  self.balancer = TickBalancer.setupForEntity("bad-chest", "badChests", 20, function(data)
+    self:checkForBuild(data)
+  end, function(entity)
+    return {entity=entity, deployed=false}
+  end)
 end
 
-function badChest.removeDataFor(self, entity)
-  for _,data in pairs(global.badChestData) do
-    if data.entity == entity then
-      table.remove(global.badChestData, _)
-    end
-  end
-end
+function badChest:checkForBuild(data)
+  if data.deployed then return end
 
-function badChest.removeDeletedChests(self)
-  for _,data in pairs(global.badChestData) do
-    if not data.entity or data.entity.valid then
-      table.remove(global.badChestData, _)
-    end
-  end
-end
-
---[[
-function badChest.openGuiFor(self, player_index, chest)
-  if self.openChests[player_index] == chest then
-    return
-  end
-  if self.openChests[player_index] ~= nil then
-    self:closeGui(player_index)
-  end
-
-  local player_gui = game.players[player_index].gui.top
-
-  local guiRoot = player_gui.add({type="frame", name="badChestGui", direction="vertical", style = "machine_frame_style"})
-  local chestData = self.chestDataFor(self.openChests[player_index])
-  guiRoot.add({ type="label", name="badChestTitle", caption="BAD Chest"})
-  local guiFlow = guiRoot.add({ type="flow", name="buttonsFlow", direction="horizontal"})
-  guiFlow.add({type="button", name="badChestMoveLeft", caption="<"})
-  guiFlow.add({type="button", name="badChestMoveRight", caption=">"})
-  guiFlow.add({type="label", name="badChestXLabel", caption=chestData.x})
-  guiFlow.add({type="button", name="badChestMoveUp", caption="^"})
-  guiFlow.add({type="button", name="badChestMoveDown", caption="v"})
-  guiFlow.add({type="label", name="badChestYLabel", caption=chestData.y})
-  guiFlow.add({type="button", name="badChestRotate", caption="R"})
-  guiFlow.add({type="label", name="badChestRLabel", caption=chestData.rotate})
-  self.openChests[player_index] = chest
-end
-
-function badChest.guiClicked(self, player_index, elementName)
-  if not self.openChests[player_index] then
-    return
-  end
-
-  local chestData = self.chestDataFor(self.openChests[player_index])
-  if elementName == "badChestMoveUp" then chestData.y = chestData.y - 1
-  elseif elementName == "badChestMoveDown" then chestData.y = chestData.y + 1
-  elseif elementName == "badChestMoveLeft" then chestData.x = chestData.x - 1
-  elseif elementName == "badChestMoveRight" then chestData.x = chestData.x + 1
-  elseif elementName == "badChestRotate" then chestData.rotate = (chestData.rotate + 1) % 4
-  end
-
-  self:updateGui(player_index)
-end
-
-function badChest.updateGui(self, player_index)
-  local chestData = self.chestDataFor(self.openChests[player_index])
-  local guiRoot = game.players[player_index].gui.top.badChestGui
-
-  guiRoot.buttonsFlow.badChestXLabel.caption = chestData.x;
-  guiRoot.buttonsFlow.badChestYLabel.caption = chestData.y;
-  guiRoot.buttonsFlow.badChestRLabel.caption = chestData.rotate;
-end
-
-function badChest.closeGui(self, player_index)
-  if not self.openChests[player_index] then
-    return
-  end
-  local guiRoot = game.players[player_index].gui.top.badChestGui
-  guiRoot.destroy()
-  self.openChests[player_index] = nil
-end
---]]
-
-function badChest.checkAllChests(self)
-  global.badChestData = global.badChestData or {}
-  for _,data in pairs(global.badChestData) do
-    if not data.deployed then
-      self:checkForBuild(data)
-    end
-  end
-end
-
-function badChest.checkForBuild(self, data)
-  if not data.entity then return end
   local chest = data.entity
 
   -- Check inventory of chest for blueprint
@@ -166,45 +74,16 @@ function badChest.checkForBuild(self, data)
   data.deployed = true
 end
 
-script.on_event(defines.events.on_tick, function(event)
-  if event.tick % 20 ~= 0 then return end
-  --[[
-  for i,player in pairs(game.players) do
-    if player.character then
-      if player.opened and player.opened.name == 'bad-chest' then
-        badChest:openGuiFor(i, player.opened)
-        badChest:renderPreview(i)
-      else
-        badChest:closeGui(i)
-      end
-    end
-  end
-  ]]--
-  badChest:checkAllChests()
-end)
+function onInit()
+  badChest:init()
+end
 
-function registerChest(event)
-  if event.created_entity.name == "bad-chest" then
-    badChest:chestDataFor(event.created_entity)
-  end
-end
-function checkRemovedChests(event)
-  if event.item_stack.name == "bad-chest" then
-    badChest:removeDeletedChests()
-  end
-end
-function unregisterChest(event)
-  if event.entity.name == "bad-chest" then
-    badChest:removeDataFor(event.entity)
+function onConfigurationChanged(data)
+  if data.mod_changes ~= nil and data.mod_changes["bad-chest"] ~= nil and (data.mod_changes["bad-chest"].old_version == "0.0.3" or data.mod_changes["bad-chest"].old_version == "0.0.2") then
+    badChest.balancer:migrateEntityData(global.badChestData)
   end
 end
 
-script.on_event(defines.events.on_built_entity, registerChest)
-script.on_event(defines.events.on_robot_built_entity, registerChest)
-script.on_event(defines.events.on_player_mined_item, checkRemovedChests)
-script.on_event(defines.events.on_robot_mined, checkRemovedChests)
-script.on_event(defines.events.on_entity_died, unregisterChest)
-
---[[script.on_event(defines.events.on_gui_click, function(event)
-  badChest:guiClicked(event.player_index, event.element.name)
-end)]]--
+script.on_init(onInit)
+script.on_load(onInit)
+script.on_configuration_changed(onConfigurationChanged)
