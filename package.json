@@ -1,6 +1,6 @@
 {
-  "name": "factorio-bad-chest",
-  "version": "0.0.3",
+  "name": "factorio-recursive-blueprints",
+  "version": "0.1.0",
   "dependencies": {
     "gulp": "^3.9.1"
   }

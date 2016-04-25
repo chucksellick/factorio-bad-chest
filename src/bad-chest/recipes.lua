@@ -2,18 +2,18 @@ data:extend(
 {
   {
     type = "recipe",
-    name = "bad-chest",
+    name = "blueprint-deployer",
     enabled = false,
     ingredients =
     {
       {"smart-chest", 1},
-      {"bad-anchor", 1}
+      {"blueprint", 1}
     },
-    result = "bad-chest"
+    result = "blueprint-deployer"
   },
   {
     type = "recipe",
-    name = "bad-anchor",
+    name = "blueprint-anchor",
     enabled = false,
     ingredients =
     {
@@ -21,7 +21,34 @@ data:extend(
       {"iron-plate", 2},
       {"electronic-circuit", 1}
     },
-    result = "bad-anchor"
+    result = "blueprint-anchor"
+  },
+  {
+    type = "recipe",
+    name = "clone-blueprint",
+    enabled = false,
+    category = "blueprints",
+    ingredients =
+    {
+      {"blueprint", 1},
+      {"advanced-circuit", 1},
+    },
+    result = "blueprint",
+    result_count = 2,
+    icon = "__recursive-blueprints__/graphics/clone-blueprint-icon.png",
+  },
+  {
+    type = "recipe",
+    name = "wipe-blueprint",
+    enabled = false,
+    category = "blueprints",
+    ingredients =
+    {
+      {"blueprint", 1},
+      {"electronic-circuit", 1},
+    },
+    result = "blueprint",
+    icon = "__recursive-blueprints__/graphics/wipe-blueprint-icon.png",
   },
 }
 )

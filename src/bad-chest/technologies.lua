@@ -2,23 +2,31 @@ data:extend(
 {
   {
     type = "technology",
-    name = "automated-deployment",
-    icon = "__bad-chest__/bad-chest/graphics/bad-chest-technology.png",
+    name = "recursive-blueprints",
+    icon = "__recursive-blueprints__/bad-chest/graphics/recursive-blueprints-technology.png",
     icon_size = 128,
     effects =
     {
       {
         type = "unlock-recipe",
-        recipe = "bad-chest"
+        recipe = "blueprint-deployer"
       },
       {
         type = "unlock-recipe",
-        recipe = "bad-anchor"
-      }
+        recipe = "blueprint-anchor"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "blueprint-printer"
+      },
+      {
+        type = "unlock-recipe",
+        recipe = "clone-blueprint"
+      },
     },
     prerequisites = {"logistic-system"},
     unit = {
-      count = 200,
+      count = 250,
       ingredients = {
         {"science-pack-1", 1},
         {"science-pack-2", 1},

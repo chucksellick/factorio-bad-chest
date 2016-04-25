@@ -1,9 +1,9 @@
 {
-  "name":"bad-chest",
+  "name":"recursive-blueprints",
   "author":"Doc",
-  "version":"0.0.4",
-  "title":"BAD Chest",
+  "version":"0.1.0",
+  "title":"Recursive Blueprints",
   "homepage":"",
-  "description":"Blueprint Automatic Deployment Chest",
+  "description":"Recursive Blueprint deployment system",
   "dependencies": ["base"]
 }
