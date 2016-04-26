@@ -61,7 +61,7 @@ function badChest:checkForBuild(data)
   local surface = chest.surface
   for _,bpEntity in pairs(bpEntities) do
     -- Anchor is never placed as it would conflict with the chest
-    if (bpEntity.name ~= "bad-anchor") then
+    if (bpEntity.name ~= "blueprint-anchor") then
       bpEntity.position = {x= bpEntity.position.x - anchorEntity.position.x + chest.position.x, y= bpEntity.position.y - anchorEntity.position.y + chest.position.y}
       bpEntity.force = chest.force
       if surface.can_place_entity(bpEntity) then
@@ -78,12 +78,12 @@ function onInit()
   badChest:init()
 end
 
-function onConfigurationChanged(data)
-  if data.mod_changes ~= nil and data.mod_changes["bad-chest"] ~= nil and (data.mod_changes["bad-chest"].old_version == "0.0.3" or data.mod_changes["bad-chest"].old_version == "0.0.2") then
-    badChest.balancer:migrateEntityData(global.badChestData)
-  end
+function onDeployerTick(data)
+end
+
+function onPrinterTick(data)
+  if entity.recipe.name == 
 end
 
 script.on_init(onInit)
 script.on_load(onInit)
-script.on_configuration_changed(onConfigurationChanged)
