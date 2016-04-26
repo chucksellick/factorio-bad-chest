@@ -3,7 +3,7 @@ data:extend(
   {
     type = "item",
     name = "blueprint-deployer",
-    icon = "__recursive-blueprints__/bad-chest/graphics/blueprint-deployer-icon.png",
+    icon = "__recursive-blueprints__/graphics/blueprint-deployer-icon.png",
     flags = {"goes-to-quickbar"},
     subgroup = "logistic-network",
     order = "b[storage]-c[blueprint-deployer]",
@@ -13,7 +13,7 @@ data:extend(
   {
     type = "item",
     name = "blueprint-anchor",
-    icon = "__recursive-blueprints__/bad-chest/graphics/blueprint-anchor-icon.png",
+    icon = "__recursive-blueprints__/graphics/blueprint-anchor-icon.png",
     flags = {"goes-to-quickbar"},
     subgroup = "logistic-network",
     order = "b[storage]-c[bad-anchor]",
@@ -23,7 +23,7 @@ data:extend(
   {
     type = "item",
     name = "blueprint-printer",
-    icon = "__recursive-blueprints__/bad-chest/graphics/blueprint-printer-icon.png",
+    icon = "__recursive-blueprints__/graphics/blueprint-printer-icon.png",
     flags = {"goes-to-quickbar"},
     subgroup = "logistic-network",
     order = "b[storage]-c[bad-anchor]",

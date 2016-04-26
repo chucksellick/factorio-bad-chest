@@ -3,7 +3,7 @@ data:extend(
   {
     type = "technology",
     name = "recursive-blueprints",
-    icon = "__recursive-blueprints__/bad-chest/graphics/recursive-blueprints-technology.png",
+    icon = "__recursive-blueprints__/graphics/recursive-blueprints-technology.png",
     icon_size = 128,
     effects =
     {

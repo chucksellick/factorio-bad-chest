@@ -2,7 +2,7 @@ data:extend({
   {
     type = "smart-container",
     name = "blueprint-deployer",
-    icon = "__recursive-blueprints__/bad-chest/graphics/blueprint-deployer-icon.png",
+    icon = "__recursive-blueprints__/graphics/blueprint-deployer-icon.png",
     flags = {"placeable-player", "player-creation"},
     minable = {hardness = 0.2, mining_time = 0.5, result = "blueprint-deployer"},
     max_health = 150,
@@ -15,7 +15,7 @@ data:extend({
     close_sound = { filename = "__base__/sound/metallic-chest-close.ogg", volume = 0.7 },
     picture =
     {
-      filename = "__recursive-blueprints__/bad-chest/graphics/blueprint-deployer-entity.png",
+      filename = "__recursive-blueprints__/graphics/blueprint-deployer-entity.png",
       priority = "extra-high",
       width = 39,
       height = 47,
@@ -28,7 +28,7 @@ data:extend({
   {
     type = "simple-entity",
     name = "blueprint-anchor",
-    icon = "__recursive-blueprints__/bad-chest/graphics/blueprint-anchor-icon.png",
+    icon = "__recursive-blueprints__/graphics/blueprint-anchor-icon.png",
     flags = {"placeable-player", "player-creation"},
     minable = {hardness = 0.2, mining_time = 0.5, result = "blueprint-anchor"},
     max_health = 150,
