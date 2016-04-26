@@ -1,5 +1,5 @@
 --[[
-TickBalancer 1.0.0
+TickBalancer 1.1.0
 
 Balances your ticks so you don't have to.
 
@@ -10,12 +10,18 @@ Changelog:
   * 23/04/2016 1.0.0
 
     Initial release
+
+  * 26/04/2016 1.1.0
+
+    Support multiple entity types (thanks to [] for raising this issue)
 ]]--
 
 require "defines"
 
 TickBalancer = {}
 TickBalancer.__index = TickBalancer
+TickBalancer.entityBalancers = {}
+TickBalancer.globalHooksInitialized = false
 
 function TickBalancer.create(laneCount, tickHandler)
   local balancer = {}
@@ -25,31 +31,18 @@ function TickBalancer.create(laneCount, tickHandler)
   return balancer
 end
 
-function TickBalancer.setupForEntity(entityType, globalProperty, laneCount, tickHandler, dataConstructor)
-  -- Initialize global storage
-  if global[globalProperty] == nil then global[globalProperty] = {} end
-  -- Create the balancer
-  local balancer = TickBalancer.create(laneCount, tickHandler)
-  -- Register existing data
-  for _,lane in ipairs(global[globalProperty]) do
-    for _2,data in ipairs(lane) do
-      table.insert(balancer.lanes[data.__laneNumber], data)
-    end
-  end
-  global[globalProperty] = balancer.lanes
-  -- Default data constructor
-  dataConstructor = dataConstructor or (function(entity)
-    return {entity=entity}
-  end)
+function TickBalancer.setupGlobalHooks()
   -- Handle game events
   function onBuiltEntity(event)
-    if event.created_entity.name == entityType then
-      balancer:add(dataConstructor(event.created_entity))
+    local maybeBalancer = TickBalancer.entityBalancers[event.created_entity.name]
+    if maybeBalancer then
+      maybeBalancer:add(maybeBalancer.dataConstructor(event.created_entity))
     end
   end
   function onMinedItem(event)
-    if event.item_stack.name == entityType then
-      for _,lane in ipairs(balancer.lanes) do
+    local maybeBalancer = TickBalancer.entityBalancers[event.item_stack.name]
+    if maybeBalancer then
+      for _,lane in ipairs(maybeBalancer.lanes) do
         for _2,data in ipairs(lane) do
           if not data.entity.valid then
             table.remove(lane, _2)
@@ -59,8 +52,9 @@ function TickBalancer.setupForEntity(entityType, globalProperty, laneCount, tick
     end
   end
   function onEntityDied(event)
-    if event.entity.name == entityType then
-      for _,lane in ipairs(balancer.lanes) do
+    local maybeBalancer = TickBalancer.entityBalancers[event.entity.name]
+    if maybeBalancer then
+      for _,lane in ipairs(maybeBalancer.lanes) do
         for _2,data in ipairs(lane) do
           if data.entity == event.entity then
             table.remove(lane, _2)
@@ -79,8 +73,36 @@ function TickBalancer.setupForEntity(entityType, globalProperty, laneCount, tick
 
   -- Handle ticks
   script.on_event(defines.events.on_tick, function(event)
-    balancer:onTick(event)
+    for key,balancer in pairs(TickBalancer.entityBalancers) do
+      balancer:onTick(event)
+    end
   end)
+
+  TickBalancer.globalHooksInitialized = true  
+end
+
+function TickBalancer.setupForEntity(entityType, globalProperty, laneCount, tickHandler, dataConstructor)
+  -- Initialize global storage
+  if global[globalProperty] == nil then global[globalProperty] = {} end
+  -- Create the balancer
+  local balancer = TickBalancer.create(laneCount, tickHandler)
+  -- Register existing data
+  for _,lane in ipairs(global[globalProperty]) do
+    for _2,data in ipairs(lane) do
+      table.insert(balancer.lanes[data.__laneNumber], data)
+    end
+  end
+  global[globalProperty] = balancer.lanes
+  -- Default data constructor
+  balancer.dataConstructor = dataConstructor or (function(entity)
+    return {entity=entity}
+  end)
+  if not TickBalancer.globalHooksInitialized then
+    TickBalancer.setupGlobalHooks()
+  end
+
+  TickBalancer.entityBalancers[entityType] = balancer
+
   return balancer
 end
 
