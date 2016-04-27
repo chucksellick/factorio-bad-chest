@@ -1,8 +1,7 @@
 require "defines"
 require "lib.TickBalancer"
 
-badChest = {}
---badChest.openChests = {}
+local mod = {}
 
 function implode(delimiter, list)
   local len = #list
@@ -16,15 +15,22 @@ function implode(delimiter, list)
   return string
 end
 
-function badChest:init()
-  self.balancer = TickBalancer.setupForEntity("bad-chest", "badChests", 20, function(data)
-    self:checkForBuild(data)
+function mod:init()
+  self.deployers = TickBalancer.setupForEntity("blueprint-deployer", "deployers", 20, function(data)
+    self:checkForDeployment(data)
   end, function(entity)
     return {entity=entity, deployed=false}
   end)
+
+  self.printers = TickBalancer.setupForEntity("blueprint-printer", "printers", 20, function(data)
+    -- noop
+  end, function(entity)
+    return {entity=entity, blueprint=nil}
+  end)
+
 end
 
-function badChest:checkForBuild(data)
+function mod:checkForDeployment(data)
   if data.deployed then return end
 
   local chest = data.entity
@@ -45,12 +51,9 @@ function badChest:checkForBuild(data)
   local bpEntities = chestItemStack.get_blueprint_entities()
   local anchorEntity = nil
   for _,bpEntity in pairs(bpEntities) do
-    if (bpEntity.name == "bad-anchor") then
-      if anchorEntity then
-        player.print("Multiple BAD Anchors in blueprint, only one is permitted")
-        return
-      end
+    if (bpEntity.name == "blueprint-anchor") then
       anchorEntity = bpEntity
+      break
     end
   end
   if not anchorEntity then
@@ -75,14 +78,7 @@ function badChest:checkForBuild(data)
 end
 
 function onInit()
-  badChest:init()
-end
-
-function onDeployerTick(data)
-end
-
-function onPrinterTick(data)
-  if entity.recipe.name == 
+  mod:init()
 end
 
 script.on_init(onInit)

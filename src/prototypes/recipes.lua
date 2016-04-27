@@ -25,8 +25,22 @@ data:extend(
   },
   {
     type = "recipe",
+    name = "blueprint-printer",
+    enabled = false,
+    ingredients =
+    {
+      {"blueprint", 1},
+      {"electronic-circuit", 2},
+      {"iron-gear-wheel", 3},
+      {"iron-plate", 5}
+    },
+    result = "blueprint-printer"
+  },
+  {
+    type = "recipe",
     name = "clone-blueprint",
     enabled = false,
+    energy_required = 1,
     category = "blueprints",
     ingredients =
     {
@@ -41,6 +55,7 @@ data:extend(
     type = "recipe",
     name = "wipe-blueprint",
     enabled = false,
+    energy_required = 1,
     category = "blueprints",
     ingredients =
     {
