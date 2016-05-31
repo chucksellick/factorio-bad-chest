@@ -12,6 +12,16 @@ data:extend(
   },
   {
     type = "item",
+    name = "blueprint-destructive-deployer",
+    icon = "__recursive-blueprints__/graphics/blueprint-deployer-icon.png",
+    flags = {"goes-to-quickbar"},
+    subgroup = "tool",
+    order = "c[automated-construction]-c[blueprint-destructive-deployer]",
+    place_result = "blueprint-destructive-deployer",
+    stack_size = 50
+  },
+  {
+    type = "item",
     name = "blueprint-anchor",
     icon = "__recursive-blueprints__/graphics/blueprint-anchor-icon.png",
     flags = {"goes-to-quickbar"},

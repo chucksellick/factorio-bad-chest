@@ -42,6 +42,7 @@ function TickBalancer.setupGlobalHooks()
   function onMinedItem(event)
     local maybeBalancer = TickBalancer.entityBalancers[event.item_stack.name]
     if maybeBalancer then
+      -- We don't know exactly which item for this event, just check all items are still valid
       for _,lane in ipairs(maybeBalancer.lanes) do
         for _2,data in ipairs(lane) do
           if not data.entity.valid then

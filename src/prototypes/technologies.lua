@@ -13,6 +13,10 @@ data:extend(
       },
       {
         type = "unlock-recipe",
+        recipe = "blueprint-destructive-deployer"
+      },
+      {
+        type = "unlock-recipe",
         recipe = "blueprint-anchor"
       },
       --[[

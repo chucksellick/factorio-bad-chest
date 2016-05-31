@@ -13,6 +13,18 @@ data:extend(
   },
   {
     type = "recipe",
+    name = "blueprint-destructive-deployer",
+    enabled = false,
+    ingredients =
+    {
+      {"smart-chest", 1},
+      {"electronic-circuit", 1},
+      {"deconstruction-planner", 1}
+    },
+    result = "blueprint-destructive-deployer"
+  },
+  {
+    type = "recipe",
     name = "blueprint-anchor",
     enabled = false,
     ingredients =
