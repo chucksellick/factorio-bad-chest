@@ -22,12 +22,13 @@ function mod:init()
     return {entity=entity, deployed=false}
   end)
 
+  --[[
   self.printers = TickBalancer.setupForEntity("blueprint-printer", "printers", 20, function(data)
     -- noop
   end, function(entity)
     return {entity=entity, blueprint=nil}
   end)
-
+  ]]--
 end
 
 function mod:checkForDeployment(data)

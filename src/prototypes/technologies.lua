@@ -15,6 +15,7 @@ data:extend(
         type = "unlock-recipe",
         recipe = "blueprint-anchor"
       },
+      --[[
       {
         type = "unlock-recipe",
         recipe = "blueprint-printer"
@@ -23,6 +24,7 @@ data:extend(
         type = "unlock-recipe",
         recipe = "clone-blueprint"
       },
+      ]]--
     },
     prerequisites = {"logistic-system"},
     unit = {

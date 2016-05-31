@@ -7,7 +7,7 @@ data:extend(
     ingredients =
     {
       {"smart-chest", 1},
-      {"blueprint", 1}
+      {"electronic-circuit", 1}
     },
     result = "blueprint-deployer"
   },
@@ -23,13 +23,14 @@ data:extend(
     },
     result = "blueprint-anchor"
   },
+  --[[
   {
     type = "recipe",
     name = "blueprint-printer",
     enabled = false,
     ingredients =
     {
-      {"blueprint", 1},
+      {"advanced-circuit", 1},
       {"electronic-circuit", 2},
       {"iron-gear-wheel", 3},
       {"iron-plate", 5}
@@ -44,7 +45,7 @@ data:extend(
     category = "blueprints",
     ingredients =
     {
-      {"blueprint", 1},
+      {"electronic-circuit", 2},
       {"advanced-circuit", 1},
     },
     result = "blueprint",
@@ -59,11 +60,11 @@ data:extend(
     category = "blueprints",
     ingredients =
     {
-      {"blueprint", 1},
+      {"advanced-circuit", 1},
       {"electronic-circuit", 1},
     },
     result = "blueprint",
     icon = "__recursive-blueprints__/graphics/wipe-blueprint-icon.png",
-  },
+  },--]]
 }
 )
